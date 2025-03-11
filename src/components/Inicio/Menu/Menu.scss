@@ -1,0 +1,10 @@
+nav a {
+    margin-right: 15px; /* Espacio entre enlaces */
+    text-decoration: none; /* Elimina el subrayado */
+    color: blue; /* Color original de Bootstrap */
+  }
+  
+  nav a:hover {
+    text-decoration: underline; /* Restaura el efecto de subrayado al pasar el mouse */
+  }
+  
