@@ -1,22 +1,30 @@
-import React from 'react'
-import {Navbar, Nav, Container} from "react-bootstrap"
-import {Link} from "react-router-dom"
-import "./Menu.scss"
+import React from 'react';
+import { Navbar, Nav, Container, Form, FormControl, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import "./Menu.scss";
 
 export function Menu() {
   return (
     <div>
-        <Navbar bg="light" data-bs-theme="light">
+      <Navbar bg="light" data-bs-theme="light">
         <Container>
-          <Navbar.Brand to="/">Barra de herramientas</Navbar.Brand>
+          <Navbar.Brand as={Link} >Barra de herramientas</Navbar.Brand>
           <Nav className="me-auto">
-            <Link to="/login">Salir</Link>
-            <Link to="/inicio">pagina de bienvenida</Link>
-            <Link to="/catalogo">Catalogo de productos</Link>
-         
+            <Link className="nav-link" to="/">Salir</Link>
+            <Link className="nav-link" to="/inicio">Página de bienvenida</Link>
+            <Link className="nav-link" to="/catalogo">Catálogo de productos</Link>
           </Nav>
+          <Form className="d-flex">
+            <FormControl
+              type="search"
+              placeholder="Buscar"
+              className="me-2"
+              aria-label="Buscar"
+            />
+            <Button variant="outline-success">Buscar</Button>
+          </Form>
         </Container>
       </Navbar>
     </div>
-  )
+  );
 }
