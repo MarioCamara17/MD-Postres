@@ -13,7 +13,7 @@ export function Menu() {
             <Link to="/login">Salir</Link>
             <Link to="/inicio">pagina de bienvenida</Link>
             <Link to="/catalogo">Catalogo de productos</Link>
-            
+         
           </Nav>
         </Container>
       </Navbar>
