@@ -10,9 +10,10 @@ export function Menu() {
         <Container>
           <Navbar.Brand to="/">Barra de herramientas</Navbar.Brand>
           <Nav className="me-auto">
-            <Link to="/">Salir</Link>
+            <Link to="/login">Salir</Link>
             <Link to="/inicio">pagina de bienvenida</Link>
             <Link to="/catalogo">Catalogo de productos</Link>
+         
           </Nav>
         </Container>
       </Navbar>
