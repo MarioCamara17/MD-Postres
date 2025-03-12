@@ -14,6 +14,7 @@ export function Menu() {
             <Link className="nav-link" to="/inicio">Página de bienvenida</Link>
             <Link className="nav-link" to="/catalogo">Catálogo de productos</Link>
             <Link className="nav-link" to="/registro"></Link>
+            <Link className="nav-link" to="/admon">Administración</Link>
           </Nav>
           <Form className="d-flex">
             <FormControl
