@@ -1,15 +1,14 @@
-import React from 'react'
-import {Table, Button} from "react-bootstrap"
-import "./ListPostres.scss"
+import React from 'react';
+import { Table, Button } from "react-bootstrap";
+import "./ListPostres.scss";
 
-export function ListPostres() {
+export function ListPostres({ postres, eliminarPostre }) {
   return (
-    <div>
-        <Table striped bordered hover>
+    <Table striped bordered hover>
       <thead>
         <tr>
           <th>#</th>
-          <th>Nombre producto</th>
+          <th>Nombre del postre</th>
           <th>Precio</th>
           <th>Cantidad</th>
           <th>Ingredientes</th>
@@ -19,26 +18,25 @@ export function ListPostres() {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>Pan de queso de bola</td>
-          <td>$280</td>
-          <td>10</td>
-          <td>mantequilla, azucar, lechera, queso de bola, harina, huevo</td>
-          <td>
-              <img src="pandebola.jpg" alt="Pan de queso de bola" width="100" />
-          </td>
-          <td><Button variant='success'> Editar</Button></td>
-          <td><Button variant='danger'>Eliminar</Button></td>
-        </tr>
-        <tr>
-        
-        </tr>
-        <tr>
-       
-        </tr>
+        {postres.length > 0 ? (
+          postres.map((postre, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{postre.nombre}</td>
+              <td>${postre.precio}</td>
+              <td>{postre.cantidad}</td>
+              <td>{postre.ingredientes}</td>
+              <td><img src={postre.imagen} alt="Imagen" className="table-img" /></td>
+              <td><Button variant="success">Editar</Button></td>
+              <td><Button variant="danger" onClick={() => eliminarPostre(postre._id)}>Eliminar</Button></td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="8" className="text-center">No hay postres disponibles</td>
+          </tr>
+        )}
       </tbody>
     </Table>
-    </div>
-  )
+  );
 }

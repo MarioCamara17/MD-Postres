@@ -31,6 +31,7 @@ export function Login() {
           Usuario:
         </label>
         <input 
+        maxLength={20}
           type="text" 
           placeholder="Ingresa tu usuario" 
           style={{
@@ -45,6 +46,7 @@ export function Login() {
           Contraseña:
         </label>
         <input
+        maxLength={20}
           type="password" 
           placeholder="Ingresa tu contraseña" 
           style={{
