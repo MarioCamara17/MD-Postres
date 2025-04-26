@@ -1,8 +1,8 @@
 import React from 'react';
-import { Table, Button } from "react-bootstrap";
+import { Table, Button, Image } from "react-bootstrap";
 import "./ListPostres.scss";
 
-export function ListPostres({ postres, eliminarPostre }) {
+export function ListPostres({ postres, eliminarPostre, editarPostre }) {
   return (
     <Table striped bordered hover>
       <thead>
@@ -26,9 +26,24 @@ export function ListPostres({ postres, eliminarPostre }) {
               <td>${postre.precio}</td>
               <td>{postre.cantidad}</td>
               <td>{postre.ingredientes}</td>
-              <td><img src={postre.imagen} alt="Imagen" className="table-img" /></td>
-              <td><Button variant="success">Editar</Button></td>
-              <td><Button variant="danger" onClick={() => eliminarPostre(postre._id)}>Eliminar</Button></td>
+              <td>
+                <Image
+                  src={postre.imagen}
+                  alt="Imagen del postre"
+                  style={{ width: "50px", height: "50px" }}
+                  roundedCircle
+                />
+              </td>
+              <td>
+                <Button variant="success" onClick={() => editarPostre(postre._id)}>
+                  Editar
+                </Button>
+              </td>
+              <td>
+                <Button variant="danger" onClick={() => eliminarPostre(postre._id)}>
+                  Eliminar
+                </Button>
+              </td>
             </tr>
           ))
         ) : (
