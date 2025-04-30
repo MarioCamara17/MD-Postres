@@ -49,15 +49,19 @@ export class Postre {
         try {
             const formData = new FormData();
             Object.keys(data).forEach((key) => {
+                if (key === "imagen" && typeof data[key] === "string") {
+                    // No agregar la imagen si es solo una URL
+                    return;
+                }
                 formData.append(key, data[key]);
             });
-
+    
             const response = await Axios.patch(`${this.baseApi}/${ENV.API_ROUTES.UPDATEPOSTRE}/${id}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-
+    
             console.log("Postre actualizado correctamente");
-            return response.data; // Devuelve el postre actualizado
+            return response.data; 
         } catch (error) {
             console.error("Error al actualizar postre:", error);
             throw error;

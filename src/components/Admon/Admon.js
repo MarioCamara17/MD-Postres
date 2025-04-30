@@ -7,6 +7,7 @@ import { Postre } from "../../api";
 import { ListPostres } from "../ListPostres/ListPostres";
 import { imagenes } from "../../assets";
 
+
 const ctrPostre = new Postre();
 
 export function Admon() {
@@ -41,6 +42,7 @@ export function Admon() {
         setPostreSeleccionado(null);
         obtenerPostres(); // Actualiza la tabla con los datos más recientes
         formik.resetForm(); // Limpia el formulario
+
       } catch (error) {
         console.error("Error al guardar el postre:", error);
       }
@@ -113,6 +115,7 @@ export function Admon() {
               value={formik.values.nombre}
               onChange={formik.handleChange}
               isInvalid={!!formik.errors.nombre}
+
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.nombre}
