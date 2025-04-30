@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useFormik } from "formik";
-import { Button, Form, Row, Col, InputGroup } from "react-bootstrap";
+import { useDropzone } from "react-dropzone";
+import { Button, Form, Row, Col, Image } from "react-bootstrap";
 import { initialValues, validationSchema } from "./Postres.form";
 import { Postre } from "../../api";
 import { ListPostres } from "../ListPostres/ListPostres";
+import { imagenes } from "../../assets";
 
 const ctrPostre = new Postre();
 
 export function Admon() {
   const [listaPostres, setListaPostres] = useState([]);
+  const [postreSeleccionado, setPostreSeleccionado] = useState(null);
 
   const formik = useFormik({
     initialValues: initialValues(),
@@ -16,17 +19,49 @@ export function Admon() {
     validateOnChange: false,
     onSubmit: async (formValue) => {
       try {
-        await ctrPostre.createPostre(formValue);
-        obtenerPostres();
+        const formData = new FormData();
+        formData.append("nombre", formValue.nombre);
+        formData.append("precio", formValue.precio);
+        formData.append("cantidad", formValue.cantidad);
+        formData.append("ingredientes", formValue.ingredientes);
+
+        if (formValue.imagenFile instanceof File) {
+          formData.append("imagen", formValue.imagenFile); // Archivo real
+        }
+
+        let response;
+        if (postreSeleccionado && postreSeleccionado._id) {
+          response = await ctrPostre.updatePostre(postreSeleccionado._id, formData);
+        } else {
+          response = await ctrPostre.createPostre(formData);
+        }
+
+        console.log("Respuesta del backend:", response);
+
+        setPostreSeleccionado(null);
+        obtenerPostres(); // Actualiza la tabla con los datos más recientes
+        formik.resetForm(); // Limpia el formulario
       } catch (error) {
-        console.error("Error al crear el postre:", error);
+        console.error("Error al guardar el postre:", error);
       }
     },
+  });
+
+  const onDrop = useCallback((acceptedFiles) => {
+    const file = acceptedFiles[0];
+    formik.setFieldValue("imagep", URL.createObjectURL(file));
+    formik.setFieldValue("imagenFile", file);
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: "image/jpeg, image/png, image/gif",
+    onDrop,
   });
 
   const obtenerPostres = async () => {
     try {
       const listaPro = await ctrPostre.getPostre();
+      console.log("Postres obtenidos:", listaPro);
       setListaPostres(listaPro || []);
     } catch (error) {
       console.error("Error al obtener los postres:", error);
@@ -36,7 +71,6 @@ export function Admon() {
 
   const eliminarPostre = async (id) => {
     try {
-      console.log("Eliminando postre con ID:", id);
       await ctrPostre.deletePostre(id);
       setListaPostres((prevLista) => prevLista.filter((postre) => postre._id !== id));
     } catch (error) {
@@ -44,9 +78,27 @@ export function Admon() {
     }
   };
 
+  const editarPostre = (postre) => {
+    setPostreSeleccionado(postre);
+    formik.setValues({
+      nombre: postre.nombre,
+      precio: postre.precio,
+      cantidad: postre.cantidad,
+      ingredientes: postre.ingredientes,
+      imagep: postre.imagen,
+      imagenFile: null,
+    });
+  };
+
   useEffect(() => {
     obtenerPostres();
   }, []);
+
+  const getImagen = () => {
+    if (formik.values.imagenFile) return formik.values.imagep;
+    if (formik.values.imagep) return formik.values.imagep;
+    return imagenes.noAvatar;
+  };
 
   return (
     <div className="p-4">
@@ -56,13 +108,18 @@ export function Admon() {
             <Form.Label>Nombre del postre</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Nombre del postre"
               name="nombre"
-              onChange={formik.handleChange}
+              placeholder="Nombre del postre"
               value={formik.values.nombre}
+              onChange={formik.handleChange}
+              isInvalid={!!formik.errors.nombre}
             />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.nombre}
+            </Form.Control.Feedback>
           </Form.Group>
         </Row>
+
         <Row className="mb-3">
           <Form.Group as={Col} md="3">
             <Form.Label>Precio</Form.Label>
@@ -72,20 +129,25 @@ export function Admon() {
               placeholder="Precio"
               value={formik.values.precio}
               onChange={formik.handleChange}
+              isInvalid={!!formik.errors.precio}
             />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.precio}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="3">
             <Form.Label>Cantidad</Form.Label>
-            <InputGroup>
-              <Form.Control
-                type="number"
-                name="cantidad"
-                placeholder="Cantidad"
-                value={formik.values.cantidad}
-                onChange={formik.handleChange}
-                required
-              />
-            </InputGroup>
+            <Form.Control
+              type="number"
+              name="cantidad"
+              placeholder="Cantidad"
+              value={formik.values.cantidad}
+              onChange={formik.handleChange}
+              isInvalid={!!formik.errors.cantidad}
+            />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.cantidad}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="3">
             <Form.Label>Ingredientes</Form.Label>
@@ -95,24 +157,31 @@ export function Admon() {
               placeholder="Ingredientes"
               value={formik.values.ingredientes}
               onChange={formik.handleChange}
+              isInvalid={!!formik.errors.ingredientes}
             />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.ingredientes}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="3">
             <Form.Label>Imagen</Form.Label>
-            <Form.Control
-              type="file"
-              name="imagen"
-              onChange={(event) => formik.setFieldValue("imagen", event.currentTarget.files[0])}
-            />
+            <div {...getRootProps()} className="form-imagen">
+              <input {...getInputProps()} />
+              <Image src={getImagen()} thumbnail width={100} />
+            </div>
           </Form.Group>
         </Row>
 
-        <Button type="submit">Enviar</Button>
+        <Button type="submit">{postreSeleccionado ? "Actualizar" : "Enviar"}</Button>
       </Form>
 
       <Row className="mt-4">
         <Col>
-          <ListPostres postres={listaPostres} eliminarPostre={eliminarPostre} />
+          <ListPostres
+            postres={listaPostres}
+            eliminarPostre={eliminarPostre}
+            editarPostre={editarPostre}
+          />
         </Col>
       </Row>
     </div>
