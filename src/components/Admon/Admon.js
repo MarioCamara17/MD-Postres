@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useFormik } from "formik";
 import { useDropzone } from "react-dropzone";
-import { Button, Form, Row, Col, InputGroup, Image } from "react-bootstrap";
+import { Button, Form, Row, Col, Image } from "react-bootstrap";
 import { initialValues, validationSchema } from "./Postres.form";
 import { Postre } from "../../api";
 import { ListPostres } from "../ListPostres/ListPostres";
-import { imagenes } from "../../assets"; // Asegúrate de tener una imagen default
+import { imagenes } from "../../assets";
 
 const ctrPostre = new Postre();
 
@@ -19,23 +19,9 @@ export function Admon() {
     validateOnChange: false,
     onSubmit: async (formValue) => {
       try {
-        const datos = { ...formValue };
-
-        // Si hay un archivo, conviértelo a URL
-        if (formValue.imagenFile instanceof File) {
-          datos.imagen = URL.createObjectURL(formValue.imagenFile);
-        }
-
-        if (postreSeleccionado && postreSeleccionado._id) {
-          await ctrPostre.deletePostre(postreSeleccionado._id);
-          await ctrPostre.createPostre(datos);
-        } else {
-          await ctrPostre.createPostre(datos);
-        }
-
-        setPostreSeleccionado(null);
-        obtenerPostres();
-        formik.resetForm();
+        await ctrPostre.createPostre(formValue);
+        obtenerPostres(); // Actualiza la lista después de crear un postre
+        formik.resetForm(); // Limpia el formulario
       } catch (error) {
         console.error("Error al guardar el postre:", error);
       }
@@ -56,6 +42,7 @@ export function Admon() {
   const obtenerPostres = async () => {
     try {
       const listaPro = await ctrPostre.getPostre();
+      console.log("Postres obtenidos:", listaPro);
       setListaPostres(listaPro || []);
     } catch (error) {
       console.error("Error al obtener los postres:", error);
@@ -66,7 +53,7 @@ export function Admon() {
   const eliminarPostre = async (id) => {
     try {
       await ctrPostre.deletePostre(id);
-      setListaPostres((prevLista) => prevLista.filter((postre) => postre._id !== id));
+      obtenerPostres(); // Actualiza la lista después de eliminar
     } catch (error) {
       console.error("Error al eliminar el postre:", error);
     }
@@ -106,7 +93,11 @@ export function Admon() {
               placeholder="Nombre del postre"
               value={formik.values.nombre}
               onChange={formik.handleChange}
+              isInvalid={!!formik.errors.nombre}
             />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.nombre}
+            </Form.Control.Feedback>
           </Form.Group>
         </Row>
 
@@ -119,7 +110,11 @@ export function Admon() {
               placeholder="Precio"
               value={formik.values.precio}
               onChange={formik.handleChange}
+              isInvalid={!!formik.errors.precio}
             />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.precio}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="3">
             <Form.Label>Cantidad</Form.Label>
@@ -129,7 +124,11 @@ export function Admon() {
               placeholder="Cantidad"
               value={formik.values.cantidad}
               onChange={formik.handleChange}
+              isInvalid={!!formik.errors.cantidad}
             />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.cantidad}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="3">
             <Form.Label>Ingredientes</Form.Label>
@@ -139,7 +138,11 @@ export function Admon() {
               placeholder="Ingredientes"
               value={formik.values.ingredientes}
               onChange={formik.handleChange}
+              isInvalid={!!formik.errors.ingredientes}
             />
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.ingredientes}
+            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="3">
             <Form.Label>Imagen</Form.Label>

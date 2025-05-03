@@ -1,9 +1,8 @@
-const localH = "http://localhost:5000/api";
-
 
 
 export const ENV = {
-    BASE_API: localH,
+    BASE_PATH:  "http://localhost:3000",
+    BASE_API: "http://localhost:5000/api",
     API_ROUTES: {
         CREATEPOSTRE: "createpostre",
         GETPOSTRE: "getpostre",
