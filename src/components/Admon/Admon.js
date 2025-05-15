@@ -19,9 +19,34 @@ export function Admon() {
     validateOnChange: false,
     onSubmit: async (formValue) => {
       try {
+
         await ctrPostre.createPostre(formValue);
         obtenerPostres(); // Actualiza la lista después de crear un postre
         formik.resetForm(); // Limpia el formulario
+
+        const formData = new FormData();
+        formData.append("nombre", formValue.nombre);
+        formData.append("precio", formValue.precio);
+        formData.append("cantidad", formValue.cantidad);
+        formData.append("ingredientes", formValue.ingredientes);
+
+        if (formValue.imagenFile instanceof File) {
+          formData.append("imagen", formValue.imagenFile); // Archivo real
+        }
+
+        let response;
+        if (postreSeleccionado && postreSeleccionado._id) {
+          response = await ctrPostre.updatePostre(postreSeleccionado._id, formData);
+        } else {
+          response = await ctrPostre.createPostre(formData);
+        }
+
+        console.log("Respuesta del backend:", response);
+
+        setPostreSeleccionado(null);
+        obtenerPostres(); // Actualiza la tabla con los datos más recientes
+        formik.resetForm(); // Limpia el formulario
+
       } catch (error) {
         console.error("Error al guardar el postre:", error);
       }
@@ -94,6 +119,7 @@ export function Admon() {
               value={formik.values.nombre}
               onChange={formik.handleChange}
               isInvalid={!!formik.errors.nombre}
+
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.nombre}
