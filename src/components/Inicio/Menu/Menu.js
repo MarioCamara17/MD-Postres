@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, Nav, Container, Form, FormControl, Button } from "react-bootstrap";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./Menu.scss";
 
@@ -16,15 +16,6 @@ export function Menu() {
             <Link className="nav-link" to="/registro"></Link>
             <Link className="nav-link" to="/admon">Administración</Link>
           </Nav>
-          <Form className="d-flex">
-            <FormControl
-              type="search"
-              placeholder="Buscar"
-              className="me-2"
-              aria-label="Buscar"
-            />
-            <Button variant="outline-success">Buscar</Button>
-          </Form>
         </Container>
       </Navbar>
     </div>
