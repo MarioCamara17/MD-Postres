@@ -46,7 +46,7 @@ export class Postre {
         } catch (error) {
             console.error("Error al eliminar postre:", error);
             throw error;
-        }
+        }    
     }
 
     async updatePostre(id, data) {
