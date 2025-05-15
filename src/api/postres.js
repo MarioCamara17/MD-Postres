@@ -46,7 +46,7 @@ export class Postre {
         } catch (error) {
             console.error("Error al eliminar postre:", error);
             throw error;
-        }    
+        }
     }
 
     async updatePostre(id, data) {
@@ -71,17 +71,4 @@ export class Postre {
             throw error;
         }
     }
-
-    async loadPostres(postres) {
-        try {
-            const response = await Axios.post(`${this.baseApi}/loadpostres`, postres, {
-                headers: { "Content-Type": "application/json" },
-            });
-            console.log("Postres cargados correctamente");
-            return response.data;
-        } catch (error) {
-            console.error("Error al cargar postres:", error);
-            throw error;
-        }
-    }
-
+}
