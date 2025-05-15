@@ -30,10 +30,11 @@ export function ListPostres({ postres, eliminarPostre, editarPostre }) {
               <td>{postre.cantidad}</td>
               <td>{postre.ingredientes}</td>
               <td>
-                <Image
-                  src={`${urlImagen}/${postre.imagep}`} // urlImagen = ENV.BASE_PATH
-                  style={{ width: "50px", height: "50px" }}
-                  roundedCircle
+              <Image
+              src={`${ENV.BASE_PATH}/${postre.imagep}`} // Ruta completa de la imagen
+              style={{ width: "50px", height: "50px" }}
+              roundedCircle
+              alt={postre.nombre}
                 />
               </td>
               <td>

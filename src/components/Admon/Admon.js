@@ -12,6 +12,7 @@ const ctrPostre = new Postre();
 export function Admon() {
   const [listaPostres, setListaPostres] = useState([]);
   const [postreSeleccionado, setPostreSeleccionado] = useState(null);
+  const [filtroNombre, setFiltroNombre] = useState(""); // Estado para el filtro
 
   const formik = useFormik({
     initialValues: initialValues(),
@@ -19,10 +20,9 @@ export function Admon() {
     validateOnChange: false,
     onSubmit: async (formValue) => {
       try {
-
         await ctrPostre.createPostre(formValue);
-        obtenerPostres(); // Actualiza la lista después de crear un postre
-        formik.resetForm(); // Limpia el formulario
+        obtenerPostres();
+        formik.resetForm();
 
         const formData = new FormData();
         formData.append("nombre", formValue.nombre);
@@ -31,7 +31,7 @@ export function Admon() {
         formData.append("ingredientes", formValue.ingredientes);
 
         if (formValue.imagenFile instanceof File) {
-          formData.append("imagen", formValue.imagenFile); // Archivo real
+          formData.append("imagen", formValue.imagenFile);
         }
 
         let response;
@@ -44,9 +44,8 @@ export function Admon() {
         console.log("Respuesta del backend:", response);
 
         setPostreSeleccionado(null);
-        obtenerPostres(); // Actualiza la tabla con los datos más recientes
-        formik.resetForm(); // Limpia el formulario
-
+        obtenerPostres();
+        formik.resetForm();
       } catch (error) {
         console.error("Error al guardar el postre:", error);
       }
@@ -78,7 +77,7 @@ export function Admon() {
   const eliminarPostre = async (id) => {
     try {
       await ctrPostre.deletePostre(id);
-      obtenerPostres(); // Actualiza la lista después de eliminar
+      obtenerPostres();
     } catch (error) {
       console.error("Error al eliminar el postre:", error);
     }
@@ -106,6 +105,12 @@ export function Admon() {
     return imagenes.noAvatar;
   };
 
+  // Filtrar lista de postres por nombre
+  const postresFiltrados = listaPostres.filter((postre) =>
+  (postre.nombre || "").toLowerCase().includes(filtroNombre.toLowerCase())
+);
+
+
   return (
     <div className="p-4">
       <Form noValidate onSubmit={formik.handleSubmit}>
@@ -119,7 +124,6 @@ export function Admon() {
               value={formik.values.nombre}
               onChange={formik.handleChange}
               isInvalid={!!formik.errors.nombre}
-
             />
             <Form.Control.Feedback type="invalid">
               {formik.errors.nombre}
@@ -182,10 +186,22 @@ export function Admon() {
         <Button type="submit">{postreSeleccionado ? "Actualizar" : "Enviar"}</Button>
       </Form>
 
+      {/* Buscador */}
+      <Row className="mt-4 mb-3">
+        <Col md="6">
+          <Form.Control
+            type="text"
+            placeholder="Buscar postre por nombre..."
+            value={filtroNombre}
+            onChange={(e) => setFiltroNombre(e.target.value)}
+          />
+        </Col>
+      </Row>
+
       <Row className="mt-4">
         <Col>
           <ListPostres
-            postres={listaPostres}
+            postres={postresFiltrados}
             eliminarPostre={eliminarPostre}
             editarPostre={editarPostre}
           />
