@@ -1,7 +1,7 @@
 
 
 export const ENV = {
-    BASE_PATH:  "http://localhost:3000",
+    BASE_PATH:  "http://localhost:5000",
     BASE_API: "http://localhost:5000/api",
     API_ROUTES: {
         CREATEPOSTRE: "createpostre",

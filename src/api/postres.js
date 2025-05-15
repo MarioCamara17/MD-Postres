@@ -12,7 +12,7 @@ export class Postre {
             });
 
             if (data.imagenFile) {
-                formData.append("imagen", data.imagenFile);
+                formData.append("imagep", data.imagenFile);
             }
 
             const response = await Axios.post(`${this.baseApi}/${ENV.API_ROUTES.CREATEPOSTRE}`, formData, {

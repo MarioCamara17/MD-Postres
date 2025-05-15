@@ -30,19 +30,22 @@ export function ListPostres({ postres, eliminarPostre, editarPostre }) {
               <td>{postre.cantidad}</td>
               <td>{postre.ingredientes}</td>
               <td>
-              <Image
-                src={`${urlImagen}/${postre.imagep}`}
-                style={{ width: "50px", height: "50px" }}
-                roundedCircle
-              />
-            </td>
+                <Image
+                  src={`${urlImagen}/${postre.imagep}`} // urlImagen = ENV.BASE_PATH
+                  style={{ width: "50px", height: "50px" }}
+                  roundedCircle
+                />
+              </td>
               <td>
                 <Button variant="success" onClick={() => editarPostre(postre)}>
                   Editar
                 </Button>
               </td>
               <td>
-                <Button variant="danger" onClick={() => eliminarPostre(postre._id)}>
+                <Button
+                  variant="danger"
+                  onClick={() => eliminarPostre(postre._id)}
+                >
                   Eliminar
                 </Button>
               </td>
