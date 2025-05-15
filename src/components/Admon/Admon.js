@@ -7,7 +7,6 @@ import { Postre } from "../../api";
 import { ListPostres } from "../ListPostres/ListPostres";
 import { imagenes } from "../../assets";
 
-
 const ctrPostre = new Postre();
 
 export function Admon() {
@@ -20,6 +19,11 @@ export function Admon() {
     validateOnChange: false,
     onSubmit: async (formValue) => {
       try {
+
+        await ctrPostre.createPostre(formValue);
+        obtenerPostres(); // Actualiza la lista después de crear un postre
+        formik.resetForm(); // Limpia el formulario
+
         const formData = new FormData();
         formData.append("nombre", formValue.nombre);
         formData.append("precio", formValue.precio);
@@ -74,7 +78,7 @@ export function Admon() {
   const eliminarPostre = async (id) => {
     try {
       await ctrPostre.deletePostre(id);
-      setListaPostres((prevLista) => prevLista.filter((postre) => postre._id !== id));
+      obtenerPostres(); // Actualiza la lista después de eliminar
     } catch (error) {
       console.error("Error al eliminar el postre:", error);
     }

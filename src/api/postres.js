@@ -11,11 +11,15 @@ export class Postre {
                 formData.append(key, data[key]);
             });
 
+            if (data.imagenFile) {
+                formData.append("imagep", data.imagenFile);
+            }
+
             const response = await Axios.post(`${this.baseApi}/${ENV.API_ROUTES.CREATEPOSTRE}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
 
-            console.log("Se agregó el postre correctamente");
+            console.log("Se agregó el postre correctamente:", response.data);
             return response.data; // Devuelve el postre creado
         } catch (error) {
             console.error("Error al crear postre:", error);
@@ -27,13 +31,13 @@ export class Postre {
         try {
             const url = `${this.baseApi}/${ENV.API_ROUTES.GETPOSTRE}`;
             const response = await Axios.get(url);
-            return response.data; // Devuelve los postres correctamente
+            console.log("Postres obtenidos:", response.data); // Verifica que el campo `imagen` esté presente
+            return response.data;
         } catch (err) {
             console.error("Error al obtener postres:", err);
-            return []; // Devuelve un array vacío en caso de error
+            return [];
         }
     }
-
     async deletePostre(id) {
         try {
             const url = `${this.baseApi}/${ENV.API_ROUTES.DELETEPOSTRE}/${id}`;
@@ -80,4 +84,4 @@ export class Postre {
             throw error;
         }
     }
-}
+

@@ -1,6 +1,9 @@
-import React from 'react';
+import React from "react";
 import { Table, Button, Image } from "react-bootstrap";
 import "./ListPostres.scss";
+import { ENV } from "../../utils/Constantes";
+
+const urlImagen = ENV.BASE_PATH;
 
 export function ListPostres({ postres, eliminarPostre, editarPostre }) {
   return (
@@ -28,19 +31,21 @@ export function ListPostres({ postres, eliminarPostre, editarPostre }) {
               <td>{postre.ingredientes}</td>
               <td>
                 <Image
-                  src={postre.imagen}
-                  alt="Imagen del postre"
+                  src={`${urlImagen}/${postre.imagep}`} // urlImagen = ENV.BASE_PATH
                   style={{ width: "50px", height: "50px" }}
                   roundedCircle
                 />
               </td>
               <td>
-                <Button variant="success" onClick={() => editarPostre(postre._id)}>
+                <Button variant="success" onClick={() => editarPostre(postre)}>
                   Editar
                 </Button>
               </td>
               <td>
-                <Button variant="danger" onClick={() => eliminarPostre(postre._id)}>
+                <Button
+                  variant="danger"
+                  onClick={() => eliminarPostre(postre._id)}
+                >
                   Eliminar
                 </Button>
               </td>
@@ -48,7 +53,9 @@ export function ListPostres({ postres, eliminarPostre, editarPostre }) {
           ))
         ) : (
           <tr>
-            <td colSpan="8" className="text-center">No hay postres disponibles</td>
+            <td colSpan="8" className="text-center">
+              No hay postres disponibles
+            </td>
           </tr>
         )}
       </tbody>
