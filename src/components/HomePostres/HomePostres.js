@@ -31,11 +31,12 @@ export function HomePostres() {
     },
   };
 
-  // Filtrar postres según el texto de búsqueda
-  const postresFiltrados = postres.filter((postre) =>
-    postre.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  const postresFiltrados = postres.filter(
+    (postre) =>
+      typeof postre.nombre === "string" &&
+      postre.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
-
+  
   return (
     <div className="container" style={fondo.tema}>
       <Tabs

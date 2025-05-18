@@ -3,8 +3,6 @@ import { Table, Button, Image } from "react-bootstrap";
 import "./ListPostres.scss";
 import { ENV } from "../../utils/Constantes";
 
-const urlImagen = ENV.BASE_PATH;
-
 export function ListPostres({ postres, eliminarPostre, editarPostre }) {
   return (
     <Table striped bordered hover>
@@ -30,11 +28,17 @@ export function ListPostres({ postres, eliminarPostre, editarPostre }) {
               <td>{postre.cantidad}</td>
               <td>{postre.ingredientes}</td>
               <td>
-              <Image
-              src={`${ENV.BASE_PATH}/${postre.imagep}`} // Ruta completa de la imagen
-              style={{ width: "50px", height: "50px" }}
-              roundedCircle
-              alt={postre.nombre}
+                <Image
+                  src={
+                    postre.imagep &&
+                    typeof postre.imagep === "string" &&
+                    postre.imagep.startsWith("uploads/")
+                      ? `http://localhost:5000/${postre.imagep}`
+                      : `http://localhost:5000/uploads/${postre.imagep}`
+                  }
+                  style={{ width: "50px", height: "50px" }}
+                  roundedCircle
+                  alt={postre.nombre}
                 />
               </td>
               <td>

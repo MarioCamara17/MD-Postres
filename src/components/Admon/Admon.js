@@ -67,12 +67,18 @@ export function Admon() {
     try {
       const listaPro = await ctrPostre.getPostre();
       console.log("Postres obtenidos:", listaPro);
-      setListaPostres(listaPro || []);
+  
+      const filtrados = (listaPro || []).filter(
+        (p) => p && p.nombre && p.nombre.trim() !== ""
+      );
+  
+      setListaPostres(filtrados);
     } catch (error) {
       console.error("Error al obtener los postres:", error);
       setListaPostres([]);
     }
   };
+  
 
   const eliminarPostre = async (id) => {
     try {

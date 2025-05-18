@@ -8,3 +8,12 @@ export const ENV = {
         UPDATEPOSTRE: "updatepostre",
     },
 };
+
+export function getImageUrl(imagep) {
+    if (!imagep || typeof imagep !== "string") return ""; // si está vacío o mal definido
+    if (imagep.startsWith("uploads/")) {
+      return `http://localhost:5000/${imagep}`; // ya incluye uploads/
+    }
+    return `http://localhost:5000/uploads/${imagep}`; // solo es el nombre
+  }
+  
