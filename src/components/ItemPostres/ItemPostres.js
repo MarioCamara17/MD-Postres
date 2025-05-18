@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Card, Button, Modal } from "react-bootstrap";
-import { ENV } from "../../utils/Constantes";
+import { getImageUrl } from "../../utils/Constantes";
 import "./ItemPostres.scss";
 
 export function ItemPostres({ postre }) {
@@ -14,10 +14,11 @@ export function ItemPostres({ postre }) {
       <Card>
         <Card.Img
           variant="top"
-          src={`${ENV.BASE_PATH}/${postre.imagep}`}
+          src={getImageUrl(postre.imagep)}
           className="card-img"
           alt={postre.nombre}
         />
+
         <Card.Body className="body">
           <Card.Title className="body__title">{postre.nombre}</Card.Title>
           <Card.Text className="body__text">
