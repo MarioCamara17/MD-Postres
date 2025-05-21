@@ -6,6 +6,7 @@ import { initialValues, validationSchema } from "./Postres.form";
 import { Postre } from "../../api";
 import { ListPostres } from "../ListPostres/ListPostres";
 import { imagenes } from "../../assets";
+import { getImageUrl } from "../../utils/Constantes";
 
 const ctrPostre = new Postre();
 
@@ -20,31 +21,15 @@ export function Admon() {
     validateOnChange: false,
     onSubmit: async (formValue) => {
       try {
-        await ctrPostre.createPostre(formValue);
-        obtenerPostres();
-        formik.resetForm();
-
-        const formData = new FormData();
-        formData.append("nombre", formValue.nombre);
-        formData.append("precio", formValue.precio);
-        formData.append("cantidad", formValue.cantidad);
-        formData.append("ingredientes", formValue.ingredientes);
-
-        if (formValue.imagenFile instanceof File) {
-          formData.append("imagen", formValue.imagenFile);
-        }
-
-        let response;
         if (postreSeleccionado && postreSeleccionado._id) {
-          response = await ctrPostre.updatePostre(postreSeleccionado._id, formData);
+          // ACTUALIZAR
+          await ctrPostre.updatePostre(postreSeleccionado._id, formValue);
         } else {
-          response = await ctrPostre.createPostre(formData);
+          // CREAR
+          await ctrPostre.createPostre(formValue);
         }
-
-        console.log("Respuesta del backend:", response);
-
-        setPostreSeleccionado(null);
         obtenerPostres();
+        setPostreSeleccionado(null);
         formik.resetForm();
       } catch (error) {
         console.error("Error al guardar el postre:", error);
@@ -90,16 +75,16 @@ export function Admon() {
   };
 
   const editarPostre = (postre) => {
-    setPostreSeleccionado(postre);
-    formik.setValues({
-      nombre: postre.nombre,
-      precio: postre.precio,
-      cantidad: postre.cantidad,
-      ingredientes: postre.ingredientes,
-      imagep: postre.imagen,
-      imagenFile: null,
-    });
-  };
+  setPostreSeleccionado(postre);
+  formik.setValues({
+    nombre: postre.nombre,
+    precio: postre.precio,
+    cantidad: postre.cantidad,
+    ingredientes: postre.ingredientes,
+    imagep: getImageUrl(postre.imagep), // Usa la función para obtener la URL completa
+    imagenFile: null,
+  });
+};
 
   useEffect(() => {
     obtenerPostres();
@@ -181,12 +166,42 @@ export function Admon() {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} md="3">
-            <Form.Label>Imagen</Form.Label>
-            <div {...getRootProps()} className="form-imagen">
-              <input {...getInputProps()} />
-              <Image src={getImagen()} thumbnail width={100} />
-            </div>
-          </Form.Group>
+  <Form.Label>Imagen</Form.Label>
+  <div
+    {...getRootProps()}
+    className="form-control d-flex align-items-center"
+    style={{
+      height: 42,
+      cursor: "pointer",
+      padding: 0,
+      marginBottom: 0,
+      background: "#fff", // igual que los otros campos
+      border: "1px solid #ced4da", // igual que los otros campos
+      borderRadius: ".375rem"
+    }}
+  >
+    <input {...getInputProps()} />
+    <Image
+      src={getImagen()}
+      style={{
+        width: 36,
+        height: 36,
+        objectFit: "cover",
+        borderRadius: 6,
+        border: "1px solid #dee2e6",
+        background: "#fff",
+        marginRight: 10,
+        marginLeft: 6
+      }}
+    />
+    <span style={{ fontSize: 13, color: "#888" }}>
+      {formik.values.imagenFile ? "Imagen seleccionada" : "Haz clic o arrastra"}
+    </span>
+  </div>
+  <Form.Text className="text-muted" style={{ fontSize: 12 }}>
+    Formato: jpg, png, gif
+  </Form.Text>
+</Form.Group>
         </Row>
 
         <Button type="submit">{postreSeleccionado ? "Actualizar" : "Enviar"}</Button>
